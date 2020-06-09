@@ -99,19 +99,24 @@ window.addEventListener('DOMContentLoaded', () => {
           modal = document.querySelector('.modal'),
           modalCloseBtn = document.querySelector('[data-close]');
 
+   
     // Вызов модального окна + фиксация без перемещения страницы.
     modalTrigger.forEach(btn => {
-        btn.addEventListener('click', function() {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden';
-        });
+        btn.addEventListener('click', openModal);
     });
-
+    
     function closeModal() {
         modal.classList.add('hide');
         modal.classList.remove('show');
         document.body.style.overflow = '';
+    }
+
+     // Modal ver 2.0
+     function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
     }
     
     modalCloseBtn.addEventListener('click', closeModal);
@@ -128,4 +133,17 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }
     });
+
+    // Modal ver 2.0 - задача - вызов мод окна через 10-15сек + вызов мод окна в конце страницы
+
+    const modalTimerId = setTimeout(openModal, 5000);
+
+    function showModalByScroll() {
+        if (window.pageXOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });
